@@ -1,0 +1,16 @@
+---
+  - name: Postgres Server 9.5
+    apt: name=postgresql-server-dev-9.5
+    
+  - name: Postgres 9.5
+    apt: name=postgresql-9.5
+
+  - name: Install psycopg2 python module, required by Ansible postgresql_user module
+    pip: name=psycopg2
+
+  - name: Create Postgres vagrant role as superuser
+    postgresql_user:
+      name: vagrant
+      password: vagrant
+      role_attr_flags: SUPERUSER
+    become_user: postgres

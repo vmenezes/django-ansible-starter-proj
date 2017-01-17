@@ -1,0 +1,28 @@
+---
+  - name: Install Nginx
+    apt: name=nginx
+
+  - name: Copy Tempfile conf that creates /var/run/my_proj for sock file used by Nginx & Gunicorn
+    template: src=my_proj_tempfile.conf
+      dest=/etc/tmpfiles.d/my_proj.conf
+
+  - name: Runs systend-tmpfiles -create to read /etc/tmpfiles.d/*.conf
+    shell: systemd-tmpfiles --create
+    
+  - name: Copy Nginx config
+    template: src=my_proj_nginx
+      dest=/etc/nginx/sites-available/my_proj
+      
+  - name: Ensure Nginx default configuration is disabled
+    file: path=/etc/nginx/sites-enabled/default
+      state=absent
+    
+  - name: Ensure that my_proj site is enabled
+    file: src=/etc/nginx/sites-available/my_proj
+      dest=/etc/nginx/sites-enabled/my_proj
+      state=link
+  
+  - name: Restart Nginx service
+    service: name=nginx
+      state=restarted
+      enabled=yes

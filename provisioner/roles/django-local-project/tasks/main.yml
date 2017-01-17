@@ -1,0 +1,12 @@
+---
+  - name: Add DJANGO_SETTINGS_MODULE to /etc/environment
+    lineinfile: dest=/etc/environment 
+      line='DJANGO_SETTINGS_MODULE="my_proj.settings.dev"'
+      insertafter='EOF'
+      state=present
+    
+  - name: Create project's Virtualenv thru virtualenvwrapper
+    shell: . /usr/local/bin/virtualenvwrapper.sh && mkvirtualenv -p python3.5 {{ project_name }}
+    args:
+      executable: /bin/bash
+    become_user: "{{ dev_username }}"

@@ -1,0 +1,27 @@
+---
+- name: Setup project with Python3, Nginx, Django, Postgres, Redis, Celery on Ubuntu 16.04
+  hosts: all
+  become: yes
+  become_method: sudo
+  
+  # Ansible still requires Python2(shame!)
+  # install it as Ubuntu => 15 comes only with Python3 out of the box
+  gather_facts: false
+  pre_tasks:
+    - raw: sudo apt-get -y install python-simplejson
+
+  vars:
+      dev_username: ubuntu
+      user_home: /home/{{ dev_username }}
+      project_name: my_proj
+      project_root: "/var/www/{{ project_name }}"
+      workon_home: "{{ user_home }}/venvs"
+
+  roles:
+    - common
+    - python
+    - postgres
+    - nginx
+    - redis
+    - django-local-project
+    # - gunicorn

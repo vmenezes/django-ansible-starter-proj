@@ -1,0 +1,24 @@
+---
+  - name: python2-pip required by Ansible pip module
+    apt: name=python-pip
+      state=present
+
+  - name: Python-virtualenv
+    apt: name=python-virtualenv
+      state=present
+  
+  - name: Virtualenvwrapper
+    pip: name=virtualenvwrapper
+      state=present
+
+  - name: Add WORKON_HOME to /etc/environment
+    lineinfile: dest=/etc/environment
+      line='WORKON_HOME="{{ user_home }}/venvs"'
+      insertafter='EOF'
+      state=present
+
+  - name: Add Virtualenvwrapper to /etc/profiles to enable it at login
+    lineinfile: dest=/etc/profile
+      line='source /usr/local/bin/virtualenvwrapper.sh'
+      insertafter='EOF'
+      state=present
